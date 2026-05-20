@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-import math
 from torch_geometric.data import Data, Batch
 from torch_geometric.nn import global_mean_pool
 
@@ -51,6 +50,10 @@ class Simple3DGNNLayer(nn.Module):
         
         # 3. FIX: Project neighbor node features to match the 32 hidden dimensions
         h_col = self.node_encoder(x[col])              # Shape: [Num_Edges, 32]
+
+        # By convention, row indicates the info target and col the source
+        # Here we get the weighted encoded info from the source
+        # Later we will aggregate this to the target
         
         # 4. Message Generation: Now both sides are size 32!
         messages = h_col * edge_weights                # Shape: [Num_Edges, 32]
